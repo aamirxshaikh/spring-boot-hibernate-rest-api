@@ -1,0 +1,36 @@
+package com.demo.springboothibernaterestapi.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.io.Serializable;
+
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public class ResourceNotFoundException extends RuntimeException implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private final String resourceName;
+
+    private final String fieldName;
+
+    private final Object fieldValue;
+
+    public ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue) {
+        super(resourceName + " not found with : " + fieldName + " and : " + fieldValue);
+        this.resourceName = resourceName;
+        this.fieldName = fieldName;
+        this.fieldValue = fieldValue;
+    }
+
+    public String getResourceName() {
+        return resourceName;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public Object getFieldValue() {
+        return fieldValue;
+    }
+}
