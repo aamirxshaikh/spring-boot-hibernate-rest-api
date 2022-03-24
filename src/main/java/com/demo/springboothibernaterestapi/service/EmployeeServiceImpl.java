@@ -36,4 +36,32 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new ResourceNotFoundException("Employee", "id", id);
         }
     }
+
+    @Override
+    public Employee updateEmployee(Employee employee, long id) {
+        Optional<Employee> existingEmployee = employeeRepository.findById(id);
+
+        if (existingEmployee.isPresent()) {
+            existingEmployee.get().setFirstName(employee.getFirstName());
+            existingEmployee.get().setLastName(employee.getLastName());
+            existingEmployee.get().setEmail(employee.getEmail());
+
+            employeeRepository.save(existingEmployee.get());
+
+            return existingEmployee.get();
+        } else {
+            throw new ResourceNotFoundException("Employee", "id", id);
+        }
+    }
+
+    @Override
+    public void deleteEmployee(long id) {
+        Optional<Employee> existingEmployee = employeeRepository.findById(id);
+
+        if (existingEmployee.isPresent()) {
+            employeeRepository.deleteById(id);
+        } else {
+            throw new ResourceNotFoundException("Employee", "id", id);
+        }
+    }
 }
