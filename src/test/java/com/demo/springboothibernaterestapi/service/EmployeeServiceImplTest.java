@@ -141,10 +141,40 @@ class EmployeeServiceImplTest {
         assertThatThrownBy(() -> employeeService.updateEmployee(new Employee(), employeeId))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("not found with : id and : " + employeeId);
+
+        verify(employeeRepository, never()).save(any());
     }
 
     @Test
-    @Disabled
     void deleteEmployee() {
+        Employee employee = new Employee();
+
+        long employeeId = 1L;
+
+        employee.setId(employeeId);
+        employee.setFirstName("Aamir");
+        employee.setLastName("Shaikh");
+        employee.setEmail("aamir@test.com");
+
+        given(employeeRepository.findById(employeeId))
+                .willReturn(Optional.of(employee));
+
+        employeeService.deleteEmployee(employeeId);
+
+        verify(employeeRepository).deleteById(employeeId);
+    }
+
+    @Test
+    void throwWhenResourceNotFoundForDelete() {
+        long employeeId = 1L;
+
+        given(employeeRepository.findById(employeeId))
+                .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> employeeService.deleteEmployee(employeeId))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("not found with : id and : " + employeeId);
+
+        verify(employeeRepository, never()).deleteById(any());
     }
 }
