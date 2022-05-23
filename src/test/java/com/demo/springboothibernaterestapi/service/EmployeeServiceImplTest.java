@@ -1,5 +1,6 @@
 package com.demo.springboothibernaterestapi.service;
 
+import com.demo.springboothibernaterestapi.exception.ResourceNotFoundException;
 import com.demo.springboothibernaterestapi.model.Employee;
 import com.demo.springboothibernaterestapi.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,10 +15,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeServiceImplTest {
@@ -78,8 +79,31 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    @Disabled
     void getEmployeeById() {
+        Employee employee = new Employee();
+
+        long employeeId = 1L;
+
+        employee.setId(employeeId);
+        employee.setFirstName("Aamir");
+        employee.setLastName("Shaikh");
+        employee.setEmail("aamir@test.com");
+
+        doReturn(Optional.of(employee)).when(employeeRepository).findById(employeeId);
+
+        assertThat(employeeService.getEmployeeById(employeeId)).isEqualTo(employee);
+    }
+
+    @Test
+    void throwWhenResourceNotFound() {
+        long employeeId = 1L;
+
+        given(employeeRepository.findById(employeeId))
+                .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> employeeService.getEmployeeById(employeeId))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("not found with : id and : " + employeeId);
     }
 
     @Test
