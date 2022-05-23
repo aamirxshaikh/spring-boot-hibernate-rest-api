@@ -95,7 +95,7 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void throwWhenResourceNotFound() {
+    void throwWhenResourceNotFoundForGet() {
         long employeeId = 1L;
 
         given(employeeRepository.findById(employeeId))
@@ -107,8 +107,40 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    @Disabled
     void updateEmployee() {
+        Employee employee = new Employee();
+
+        long employeeId = 1L;
+
+        employee.setId(employeeId);
+        employee.setFirstName("Aamir");
+        employee.setLastName("Shaikh");
+        employee.setEmail("aamir@test.com");
+
+        doReturn(Optional.of(employee)).when(employeeRepository).findById(employeeId);
+
+        assertThat(employeeService.updateEmployee(employee, employeeId)).isEqualTo(employee);
+
+        ArgumentCaptor<Employee> employeeArgumentCaptor = ArgumentCaptor.forClass(Employee.class);
+
+        verify(employeeRepository)
+                .save(employeeArgumentCaptor.capture());
+
+        Employee captured = employeeArgumentCaptor.getValue();
+
+        assertThat(captured).isEqualTo(employee);
+    }
+
+    @Test
+    void throwWhenResourceNotFoundForUpdate() {
+        long employeeId = 1L;
+
+        given(employeeRepository.findById(employeeId))
+                .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> employeeService.updateEmployee(new Employee(), employeeId))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("not found with : id and : " + employeeId);
     }
 
     @Test
