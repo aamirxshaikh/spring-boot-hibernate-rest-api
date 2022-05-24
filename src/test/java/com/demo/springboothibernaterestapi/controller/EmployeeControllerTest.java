@@ -14,14 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,7 +46,7 @@ class EmployeeControllerTest {
                 MockMvcRequestBuilders
                         .post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"Doe@test.com\"}")
+                        .content("{\"id\": \"1\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"Doe@test.com\"}")
                 )
                 .andExpect(status().isCreated());
 
@@ -97,8 +94,18 @@ class EmployeeControllerTest {
     }
 
     @Test
-    @Disabled
-    void updateEmployee() {
+    void updateEmployee() throws Exception {
+        long employeeId = 1L;
+
+        mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/api/employees/{id}", employeeId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\": \"1\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"Doe@test.com\"}")
+                )
+                .andExpect(status().isOk());
+
+        verify(employeeService).updateEmployee(any(Employee.class), anyLong());
     }
 
     @Test
