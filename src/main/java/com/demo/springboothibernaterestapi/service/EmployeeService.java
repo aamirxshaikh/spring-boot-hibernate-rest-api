@@ -5,7 +5,7 @@ import com.demo.springboothibernaterestapi.model.Employee;
 import java.util.List;
 
 public interface EmployeeService {
-    Employee saveEmployee(Employee employee);
+    Employee saveEmployee(Employee employee) throws Exception;
 
     List<Employee> getAllEmployees();
 

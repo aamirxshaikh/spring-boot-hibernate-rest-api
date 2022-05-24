@@ -17,7 +17,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee saveEmployee(Employee employee) {
+    public Employee saveEmployee(Employee employee) throws Exception {
+        boolean exists = employeeRepository.existsByEmail(employee.getEmail());
+
+        if (exists) {
+            throw new Exception("Email " + employee.getEmail() + " is taken");
+        }
+
         return employeeRepository.save(employee);
     }
 
