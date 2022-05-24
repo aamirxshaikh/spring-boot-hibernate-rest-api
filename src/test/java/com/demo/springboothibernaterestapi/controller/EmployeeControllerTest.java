@@ -5,7 +5,6 @@ import com.demo.springboothibernaterestapi.service.EmployeeService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +108,12 @@ class EmployeeControllerTest {
     }
 
     @Test
-    @Disabled
-    void deleteEmployee() {
+    void deleteEmployee() throws Exception {
+        long employeeId = 1L;
+
+        mvc.perform(MockMvcRequestBuilders.delete("/api/employees/{id}", employeeId))
+                .andExpect(status().isOk());
+
+        verify(employeeService).deleteEmployee(anyLong());
     }
 }
