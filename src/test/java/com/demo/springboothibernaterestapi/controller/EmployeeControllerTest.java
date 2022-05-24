@@ -44,8 +44,16 @@ class EmployeeControllerTest {
     }
 
     @Test
-    @Disabled
     void saveEmployee() throws Exception {
+        mvc.perform(
+                MockMvcRequestBuilders
+                        .post("/api/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"Doe@test.com\"}")
+                )
+                .andExpect(status().isCreated());
+
+        verify(employeeService).saveEmployee(any(Employee.class));
     }
 
     @Test
