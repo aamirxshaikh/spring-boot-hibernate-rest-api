@@ -72,5 +72,5 @@
             </plugin>
         </plugins>
     </build>
-
+    <finalName>spring-boot-blog-rest-api-image</finalName>
 </project>
